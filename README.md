@@ -2,11 +2,11 @@
 
 Chrome extension that stops the "one more game" reflex on Lichess and Chess.com.
 
-You finish a game with an opening in it you wanted to look up, and before you think about it you
-have clicked Rematch. Ten games later the opening is gone from your head and you are on tilt. One
-click on the toolbar icon blocks Rematch / New game / Play again and the lobby quick-pairing pane for
-15 minutes (badge shows minutes left), and when a game ends a short overlay points you at the analysis
-board (where the opening explorer lives) instead. Click the icon again to unblock.
+Move six, and there it is again: that line you keep meaning to look up. You make a mental note, play on, and the game takes over. Thirty moves later it ends, your hand is already on Rematch, and the note is gone. Not forgotten, exactly. Overwritten, the way every game overwrites the one before it. By the end of the evening you have met the same opening three times and looked it up zero.
+
+One click on the toolbar icon blocks Rematch / New game / Play again and the lobby quick-pairing
+pane for 15 minutes (badge shows minutes left), and when a game ends a short overlay points you at
+the analysis board, where the opening explorer lives, instead. Click the icon again to unblock.
 
 It is not a wall: typing a URL still works. It only removes the automatic click.
 

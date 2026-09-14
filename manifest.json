@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Postmortem — stop the \"one more game\" reflex",
   "version": "0.1.0",
-  "description": "Blocks Rematch / New Game on Lichess and Chess.com for 15 min, so you explore the opening you just met instead of tilting into more.",
+  "description": "Blocks Rematch / New Game on Lichess and Chess.com for 15 min, so the opening you meant to look up survives the end of the game.",
   "permissions": [
     "storage",
     "alarms"
