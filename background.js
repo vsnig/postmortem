@@ -1,5 +1,4 @@
-// MARK: config
-const DURATION_MIN = 15;
+importScripts('settings.js');
 
 // MARK: state
 async function armedUntil() {
@@ -21,7 +20,8 @@ async function refreshBadge() {
 // MARK: toolbar click = toggle
 chrome.action.onClicked.addListener(async () => {
   const cur = await armedUntil();
-  const next = cur ? 0 : Date.now() + DURATION_MIN * 60000;
+  const { durationMin } = await cfGetSettings();
+  const next = cur ? 0 : Date.now() + durationMin * 60000;
   await chrome.storage.local.set({ armedUntil: next });
   await refreshBadge();
 });

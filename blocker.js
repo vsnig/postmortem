@@ -7,6 +7,8 @@
   const BANNER_ID = 'cf-banner';
   const OVERLAY_ID = 'cf-overlay';
   const OVERLAY_MS = 5000;
+  const AUTO_OPEN_DELAY_MS = 1200; // long enough to register that the game ended
+  const ANALYSIS_LINK_WAIT_MS = 3000; // the analysis link can render a beat after the rematch button
   const CSS = `
     [${ATTR}] { opacity: .25 !important; filter: grayscale(1) !important; cursor: not-allowed !important; }
     #${BANNER_ID} {
@@ -42,6 +44,7 @@
   let bannerTimer = null;
   let gameOverSeen = false; // gameOver rule currently matching
   let firstScan = true; // a finished game already on screen at load is not an event
+  let settings = { ...CF_DEFAULTS };
 
   // MARK: helpers
   const norm = (s) => (s || '').replace(/\s+/g, ' ').trim();
@@ -129,7 +132,19 @@
     return null;
   }
 
-  function showOverlay() {
+  function waitAnalysisHref(ms) {
+    return new Promise((resolve) => {
+      const t0 = Date.now();
+      const tick = () => {
+        const href = analysisHref();
+        if (href || Date.now() - t0 > ms) return resolve(href);
+        setTimeout(tick, 150);
+      };
+      tick();
+    });
+  }
+
+  async function showOverlay() {
     document.getElementById(OVERLAY_ID)?.remove();
     const o = document.createElement('div');
     o.id = OVERLAY_ID;
@@ -142,7 +157,17 @@
     sub.className = 'cf-sub';
     sub.textContent = `That opening is still fresh. New games stay blocked for ${minutesLeft()} min.`;
     card.append(h, sub);
-    const href = analysisHref();
+    o.append(card);
+    (document.body || document.documentElement).appendChild(o);
+
+    const href = await waitAnalysisHref(ANALYSIS_LINK_WAIT_MS);
+    if (href && settings.autoOpenAnalysis) {
+      sub.textContent = 'Opening the analysis board…';
+      setTimeout(() => {
+        if (isArmed()) location.href = href;
+      }, AUTO_OPEN_DELAY_MS);
+      return;
+    }
     if (href) {
       const a = document.createElement('a');
       a.className = 'cf-go';
@@ -150,8 +175,6 @@
       a.textContent = 'Open the analysis board';
       card.append(a);
     }
-    o.append(card);
-    (document.body || document.documentElement).appendChild(o);
     setTimeout(() => {
       o.classList.add('cf-fade');
       setTimeout(() => o.remove(), 700);
@@ -209,8 +232,10 @@
   }
 
   // MARK: storage sync
+  cfGetSettings().then((s) => (settings = s));
   chrome.storage.local.get('armedUntil').then(({ armedUntil = 0 }) => setArmed(armedUntil));
   chrome.storage.onChanged.addListener((ch, area) => {
     if (area === 'local' && ch.armedUntil) setArmed(ch.armedUntil.newValue || 0);
+    if (area === 'sync') cfGetSettings().then((s) => (settings = s));
   });
 })();

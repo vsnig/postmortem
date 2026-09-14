@@ -8,7 +8,7 @@
 
 Move six, and there it is again: that line you keep meaning to look up. You make a mental note, play on, and the game takes over. Thirty moves later it ends, your hand is already on Rematch, and the note is gone. Not forgotten, exactly. Overwritten, the way every game overwrites the one before it. By the end of the evening you have met the same opening three times and looked it up zero.
 
-Postmortem holds that door shut. One click on the toolbar icon and, for the next 15 minutes, the one-click paths into a new game on Lichess and Chess.com are switched off: Rematch, New opponent, New game, Play again, and the lobby quick-pairing pane. When a game ends, a short "Game over. Postmortem time." overlay covers the buttons for five seconds and offers the site's own analysis board, where the opening explorer lives, instead. Click the icon again to unblock.
+Postmortem holds that door shut. One click on the toolbar icon and, for the next 15 minutes, the one-click paths into a new game on Lichess and Chess.com are switched off: Rematch, New opponent, New game, Play again, and the lobby quick-pairing pane. When a game ends, a short "Game over. Postmortem time." overlay covers the buttons for five seconds and offers the site's own analysis board, where the opening explorer lives, instead. Click the icon again to unblock. Settings: how many minutes to block, and whether to open the analysis board automatically when a game ends.
 
 It is not a wall. You can still type a URL and play. It only removes the automatic click, so the decision to play another game is a decision again.
 

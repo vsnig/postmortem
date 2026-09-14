@@ -22,9 +22,18 @@ Store listing text: [STORE.md](STORE.md).
 After editing files: click the ↻ reload button on the extension card, then reload the site tab.
 Content-script logs are in the page's DevTools console; service-worker logs via the extension card's "service worker" link.
 
+## Settings
+
+Right-click the icon → Options (or the extension card → Details → Extension options):
+
+- **Block new games for N minutes** (default 15). Applies to the next click on the icon.
+- **Open the analysis board automatically when a game ends** (default off). While blocked, the game-over
+  overlay navigates to the site's own analysis link after about a second instead of waiting for you to click it.
+
 ## Layout
 
 - `background.js` — toolbar click toggles `armedUntil` in `chrome.storage.local`, badge countdown.
+- `settings.js` — defaults + reader for settings in `chrome.storage.sync`; `options.html` / `options.js` — the settings page.
 - `blocker.js` — generic blocker: marks matched elements, swallows their pointer/key events in capture phase, shows the banner.
 - `sites/lichess.js`, `sites/chesscom.js` — per-site rules (`{ path?, selectors?, text? }`). chess.com class names churn, so its rules match button text.
 - `scripts/make-icons.py` — placeholder icons.

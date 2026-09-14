@@ -8,12 +8,16 @@
     "alarms"
   ],
   "action": {
-    "default_title": "Postmortem — click to block new games for 15 min (click again to unblock)",
+    "default_title": "Postmortem — click to block new games (click again to unblock)",
     "default_icon": {
       "16": "icons/16.png",
       "48": "icons/48.png",
       "128": "icons/128.png"
     }
+  },
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": false
   },
   "icons": {
     "16": "icons/16.png",
@@ -29,6 +33,7 @@
         "https://lichess.org/*"
       ],
       "js": [
+        "settings.js",
         "sites/lichess.js",
         "blocker.js"
       ],
@@ -39,6 +44,7 @@
         "https://www.chess.com/*"
       ],
       "js": [
+        "settings.js",
         "sites/chesscom.js",
         "blocker.js"
       ],

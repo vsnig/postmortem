@@ -1,0 +1,30 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Postmortem settings</title>
+    <style>
+      body { font: 14px/1.5 system-ui, sans-serif; margin: 0; padding: 16px 20px; min-width: 320px; color: #222; }
+      h1 { font-size: 15px; margin: 0 0 12px; }
+      label { display: block; margin: 10px 0; }
+      input[type="number"] { width: 4em; margin-left: 6px; }
+      .hint { color: #666; font-size: 12px; margin: 2px 0 0 0; }
+      .saved { color: #2e7d32; font-size: 12px; height: 1em; margin-top: 8px; }
+    </style>
+  </head>
+  <body>
+    <h1>Postmortem</h1>
+    <label>
+      Block new games for <input id="durationMin" type="number" min="1" max="720" /> minutes
+      <p class="hint">Applies to the next click on the icon.</p>
+    </label>
+    <label>
+      <input id="autoOpenAnalysis" type="checkbox" />
+      Open the analysis board automatically when a game ends
+      <p class="hint">While blocked. Uses the site's own analysis link; skipped if the page has none.</p>
+    </label>
+    <div id="saved" class="saved"></div>
+    <script src="settings.js"></script>
+    <script src="options.js"></script>
+  </body>
+</html>
