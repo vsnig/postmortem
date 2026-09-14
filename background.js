@@ -31,3 +31,6 @@ chrome.alarms.create('tick', { periodInMinutes: 1 });
 chrome.alarms.onAlarm.addListener(refreshBadge);
 chrome.runtime.onInstalled.addListener(refreshBadge);
 chrome.runtime.onStartup.addListener(refreshBadge);
+chrome.storage.onChanged.addListener((ch, area) => {
+  if (area === 'local' && ch.armedUntil) refreshBadge();
+});

@@ -144,6 +144,11 @@
     });
   }
 
+  // Going to analysis is the point — restart the block for the full duration.
+  function rearm() {
+    return chrome.storage.local.set({ armedUntil: Date.now() + settings.durationMin * 60000 });
+  }
+
   async function showOverlay() {
     document.getElementById(OVERLAY_ID)?.remove();
     const o = document.createElement('div');
@@ -163,8 +168,10 @@
     const href = await waitAnalysisHref(ANALYSIS_LINK_WAIT_MS);
     if (href && settings.autoOpenAnalysis) {
       sub.textContent = 'Opening the analysis board…';
-      setTimeout(() => {
-        if (isArmed()) location.href = href;
+      setTimeout(async () => {
+        if (!isArmed()) return;
+        await rearm();
+        location.href = href;
       }, AUTO_OPEN_DELAY_MS);
       return;
     }
@@ -173,6 +180,11 @@
       a.className = 'cf-go';
       a.href = href;
       a.textContent = 'Open the analysis board';
+      a.addEventListener('click', async (e) => {
+        e.preventDefault();
+        await rearm();
+        location.href = href;
+      });
       card.append(a);
     }
     setTimeout(() => {
