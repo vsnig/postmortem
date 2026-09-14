@@ -5,6 +5,8 @@
   const ATTR = 'data-cf-blocked';
   const STYLE_ID = 'cf-style';
   const BANNER_ID = 'cf-banner';
+  const OVERLAY_ID = 'cf-overlay';
+  const OVERLAY_MS = 5000;
   const CSS = `
     [${ATTR}] { opacity: .25 !important; filter: grayscale(1) !important; cursor: not-allowed !important; }
     #${BANNER_ID} {
@@ -14,6 +16,23 @@
       pointer-events: none; transition: transform .15s;
     }
     #${BANNER_ID}.cf-shake { transform: translateX(-6px); }
+    #${OVERLAY_ID} {
+      position: fixed; inset: 0; z-index: 2147483646; display: flex; align-items: center; justify-content: center;
+      background: rgba(0,0,0,.55); backdrop-filter: blur(2px);
+      font: 15px/1.4 system-ui, sans-serif; color: #eee;
+      opacity: 1; transition: opacity .6s;
+    }
+    #${OVERLAY_ID}.cf-fade { opacity: 0; pointer-events: none; }
+    #${OVERLAY_ID} .cf-card {
+      background: #1b1b1b; padding: 28px 36px; border-radius: 12px; text-align: center;
+      box-shadow: 0 6px 30px rgba(0,0,0,.6);
+    }
+    #${OVERLAY_ID} .cf-title { font-size: 26px; font-weight: 600; margin: 0 0 6px; }
+    #${OVERLAY_ID} .cf-sub { opacity: .7; margin: 0 0 18px; }
+    #${OVERLAY_ID} a.cf-go {
+      display: inline-block; background: #c0392b; color: #fff; text-decoration: none;
+      padding: 10px 18px; border-radius: 8px; font-weight: 600;
+    }
   `;
 
   let armedUntil = 0;
@@ -21,6 +40,8 @@
   let scanTimer = null;
   let expiryTimer = null;
   let bannerTimer = null;
+  let gameOverSeen = false; // gameOver rule currently matching
+  let firstScan = true; // a finished game already on screen at load is not an event
 
   // MARK: helpers
   const norm = (s) => (s || '').replace(/\s+/g, ' ').trim();
@@ -43,14 +64,20 @@
     scanTimer = null;
     if (!isArmed()) return;
     const hits = new Set();
+    let gameOver = false;
     for (const r of activeRules()) {
+      const before = hits.size;
       for (const sel of r.selectors || []) document.querySelectorAll(sel).forEach((el) => hits.add(el));
       if (r.text) {
         document.querySelectorAll('button, a, [role="button"]').forEach((el) => {
           if (r.text.test(norm(el.textContent))) hits.add(el);
         });
       }
+      if (r.gameOver && hits.size > before) gameOver = true;
     }
+    if (gameOver && !gameOverSeen && !firstScan) showOverlay();
+    gameOverSeen = gameOver;
+    firstScan = false;
     document.querySelectorAll(`[${ATTR}]`).forEach((el) => {
       if (!hits.has(el)) el.removeAttribute(ATTR);
     });
@@ -86,6 +113,49 @@
     if (!b) return;
     b.classList.add('cf-shake');
     setTimeout(() => b.classList.remove('cf-shake'), 150);
+  }
+
+  // MARK: game-over overlay (occupies the reflex second, then fades)
+  function analysisHref() {
+    for (const sel of CF_SITE.analysisSelectors || []) {
+      const el = document.querySelector(sel);
+      if (el?.href) return el.href;
+    }
+    if (CF_SITE.analysisText) {
+      for (const el of document.querySelectorAll('a')) {
+        if (CF_SITE.analysisText.test(norm(el.textContent)) && el.href) return el.href;
+      }
+    }
+    return null;
+  }
+
+  function showOverlay() {
+    document.getElementById(OVERLAY_ID)?.remove();
+    const o = document.createElement('div');
+    o.id = OVERLAY_ID;
+    const card = document.createElement('div');
+    card.className = 'cf-card';
+    const h = document.createElement('p');
+    h.className = 'cf-title';
+    h.textContent = 'Game over. Postmortem time.';
+    const sub = document.createElement('p');
+    sub.className = 'cf-sub';
+    sub.textContent = `New games stay blocked for ${minutesLeft()} min.`;
+    card.append(h, sub);
+    const href = analysisHref();
+    if (href) {
+      const a = document.createElement('a');
+      a.className = 'cf-go';
+      a.href = href;
+      a.textContent = 'Open analysis';
+      card.append(a);
+    }
+    o.append(card);
+    (document.body || document.documentElement).appendChild(o);
+    setTimeout(() => {
+      o.classList.add('cf-fade');
+      setTimeout(() => o.remove(), 700);
+    }, OVERLAY_MS);
   }
 
   // MARK: input interception (capture phase, so the page never sees it)
@@ -133,6 +203,7 @@
       observer?.disconnect();
       observer = null;
       document.querySelectorAll(`[${ATTR}]`).forEach((el) => el.removeAttribute(ATTR));
+      document.getElementById(OVERLAY_ID)?.remove();
       renderBanner();
     }
   }
