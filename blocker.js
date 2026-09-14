@@ -140,14 +140,14 @@
     h.textContent = 'Game over. Postmortem time.';
     const sub = document.createElement('p');
     sub.className = 'cf-sub';
-    sub.textContent = `New games stay blocked for ${minutesLeft()} min.`;
+    sub.textContent = `That opening is still fresh. New games stay blocked for ${minutesLeft()} min.`;
     card.append(h, sub);
     const href = analysisHref();
     if (href) {
       const a = document.createElement('a');
       a.className = 'cf-go';
       a.href = href;
-      a.textContent = 'Open analysis';
+      a.textContent = 'Open the analysis board';
       card.append(a);
     }
     o.append(card);
