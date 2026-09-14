@@ -1,0 +1,25 @@
+{
+  "manifest_version": 3,
+  "name": "Chess Focus",
+  "version": "0.1.0",
+  "description": "One click blocks the reflexive 'next game' buttons on lichess.org and chess.com for a while.",
+  "permissions": ["storage", "alarms"],
+  "action": {
+    "default_title": "Chess Focus — click to block new games for 15 min (click again to unblock)",
+    "default_icon": { "16": "icons/16.png", "48": "icons/48.png", "128": "icons/128.png" }
+  },
+  "icons": { "16": "icons/16.png", "48": "icons/48.png", "128": "icons/128.png" },
+  "background": { "service_worker": "background.js" },
+  "content_scripts": [
+    {
+      "matches": ["https://lichess.org/*"],
+      "js": ["sites/lichess.js", "blocker.js"],
+      "run_at": "document_start"
+    },
+    {
+      "matches": ["https://www.chess.com/*"],
+      "js": ["sites/chesscom.js", "blocker.js"],
+      "run_at": "document_start"
+    }
+  ]
+}
