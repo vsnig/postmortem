@@ -43,3 +43,8 @@ Right-click the icon → Options (or the extension card → Details → Extensio
 
 Open the site, find the button, add either a CSS selector or a text regex to the site file. Text is
 matched against the element's normalized `textContent` (`button`, `a`, `[role=button]`).
+
+## Publishing
+
+`scripts/pack.sh` builds `dist/postmortem-<version>.zip` for the Chrome Web Store (bump `version` in
+`manifest.json` first). Listing text lives in `STORE.md`.
