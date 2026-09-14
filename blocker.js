@@ -78,7 +78,7 @@
       b.id = BANNER_ID;
       (document.body || document.documentElement).appendChild(b);
     }
-    b.textContent = `Chess Focus · new games blocked · ${minutesLeft()} min left`;
+    b.textContent = `Postmortem · new games blocked · ${minutesLeft()} min left`;
   }
 
   function shakeBanner() {
