@@ -1,9 +1,17 @@
 # Postmortem
 
-Chrome extension. One click on the toolbar icon blocks the reflexive "next game" paths on
-lichess.org and chess.com for 15 minutes (badge shows minutes left). Click again to unblock.
+Chrome extension that stops the "one more game" reflex on Lichess and Chess.com.
+
+You finish a game, notice an opening idea or a blunder worth understanding, and before you think about
+it you have clicked Rematch. Ten games later the idea is gone and you are on tilt. One click on the
+toolbar icon blocks Rematch / New game / Play again and the lobby quick-pairing pane for 15 minutes
+(badge shows minutes left), and when a game ends a short overlay points you at the analysis board
+instead. Click the icon again to unblock.
+
+It is not a wall: typing a URL still works. It only removes the automatic click.
 
 Named after the chess postmortem: the analysis you do right after a game instead of starting the next one.
+Store listing text: [STORE.md](STORE.md).
 
 The value is not a wall — typing a URL still works. It only removes the one-click reflex:
 rematch / new game / play again buttons on the game-over screen, and the lobby quick-pairing pane.
