@@ -1,9 +1,9 @@
 # Postmortem
 
 Chrome extension. One click on the toolbar icon blocks the reflexive "next game" paths on
+lichess.org and chess.com for 15 minutes (badge shows minutes left). Click again to unblock.
 
 Named after the chess postmortem: the analysis you do right after a game instead of starting the next one.
-lichess.org and chess.com for 15 minutes (badge shows minutes left). Click again to unblock.
 
 The value is not a wall — typing a URL still works. It only removes the one-click reflex:
 rematch / new game / play again buttons on the game-over screen, and the lobby quick-pairing pane.
