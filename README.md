@@ -13,9 +13,6 @@ It is not a wall: typing a URL still works. It only removes the automatic click.
 Named after the chess postmortem: the analysis you do right after a game instead of starting the next one.
 Store listing text: [STORE.md](STORE.md).
 
-The value is not a wall — typing a URL still works. It only removes the one-click reflex:
-rematch / new game / play again buttons on the game-over screen, and the lobby quick-pairing pane.
-
 ## Dev mode
 
 1. `chrome://extensions` → enable **Developer mode** (top right).
