@@ -6,7 +6,7 @@ Move six, and there it is again: that line you keep meaning to look up. You make
 
 One click on the toolbar icon blocks Rematch / New game / Play again and the lobby quick-pairing
 pane for 15 minutes (badge shows minutes left), and when a game ends a short overlay points you at
-the analysis board, where the opening explorer lives, instead. Going to the analysis board (button or auto-open) restarts the block for the full duration.
+the analysis board, where the opening explorer lives, instead. Going to the analysis board (button or auto-open) ends the block: the reflex is beaten.
 Click the icon again to unblock.
 
 It is not a wall: typing a URL still works. It only removes the automatic click.

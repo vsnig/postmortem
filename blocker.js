@@ -144,9 +144,9 @@
     });
   }
 
-  // Going to analysis is the point — restart the block for the full duration.
-  function rearm() {
-    return chrome.storage.local.set({ armedUntil: Date.now() + settings.durationMin * 60000 });
+  // Landing in analysis is the point — the reflex is beaten, so the block ends there.
+  function disarm() {
+    return chrome.storage.local.set({ armedUntil: 0 });
   }
 
   async function showOverlay() {
@@ -170,7 +170,7 @@
       sub.textContent = 'Opening the analysis board…';
       setTimeout(async () => {
         if (!isArmed()) return;
-        await rearm();
+        await disarm();
         location.href = href;
       }, AUTO_OPEN_DELAY_MS);
       return;
@@ -182,7 +182,7 @@
       a.textContent = 'Open the analysis board';
       a.addEventListener('click', async (e) => {
         e.preventDefault();
-        await rearm();
+        await disarm();
         location.href = href;
       });
       card.append(a);
