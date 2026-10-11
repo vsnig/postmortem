@@ -9,6 +9,10 @@ pane for 15 minutes (badge shows minutes left), and when a game ends a short ove
 the analysis board, where the opening explorer lives, instead. Going to the analysis board (button or auto-open) ends the block: the reflex is beaten.
 Click the icon again to unblock.
 
+Clicking the icon during a game also records the move you were at (read from the move list on the
+page). The banner shows "flagged at move 12 (Nf3)", the game-over overlay repeats it, and on Lichess
+the analysis button opens the board at that ply.
+
 It is not a wall: typing a URL still works. It only removes the automatic click.
 
 Named after the chess postmortem: the analysis you do right after a game instead of starting the next one.
@@ -36,7 +40,7 @@ Right-click the icon → Options (or the extension card → Details → Extensio
 - `background.js` — toolbar click toggles `armedUntil` in `chrome.storage.local`, badge countdown.
 - `settings.js` — defaults + reader for settings in `chrome.storage.sync`; `options.html` / `options.js` — the settings page.
 - `blocker.js` — generic blocker: marks matched elements, swallows their pointer/key events in capture phase, shows the banner.
-- `sites/lichess.js`, `sites/chesscom.js` — per-site rules (`{ path?, selectors?, text? }`). chess.com class names churn, so its rules match button text.
+- `sites/lichess.js`, `sites/chesscom.js` — per-site rules (`{ path?, selectors?, text?, gameOver? }`), the analysis-link finder, and the move-list reader (`isGamePage`, `ply`, `analysisAtPly`). chess.com class names churn, so its rules match button text.
 - `scripts/make-icons.py` — placeholder icons.
 
 ## Adding a rule

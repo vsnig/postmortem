@@ -45,6 +45,7 @@
   let gameOverSeen = false; // gameOver rule currently matching
   let firstScan = true; // a finished game already on screen at load is not an event
   let settings = { ...CF_DEFAULTS };
+  let mark = null; // { site, game, ply, move, san, at } — where the block was switched on
 
   // MARK: helpers
   const norm = (s) => (s || '').replace(/\s+/g, ' ').trim();
@@ -92,6 +93,19 @@
     scanTimer = setTimeout(scan, 150);
   }
 
+  // MARK: the mark — which move the block was switched on at
+  const moveNo = (ply) => Math.ceil(ply / 2);
+  const markText = (m) => (m ? `move ${m.move}${m.san ? ` (${m.san})` : ''}` : null);
+
+  async function recordMark() {
+    if (!CF_SITE.isGamePage?.() || document.visibilityState !== 'visible') return;
+    const p = CF_SITE.ply?.();
+    if (!p) return;
+    mark = { site: CF_SITE.name, game: location.href, ply: p.ply, move: moveNo(p.ply), san: p.san, at: Date.now() };
+    await chrome.storage.local.set({ mark });
+    renderBanner();
+  }
+
   // MARK: banner
   function minutesLeft() {
     return Math.max(1, Math.ceil((armedUntil - Date.now()) / 60000));
@@ -108,7 +122,8 @@
       b.id = BANNER_ID;
       (document.body || document.documentElement).appendChild(b);
     }
-    b.textContent = `Postmortem · new games blocked · ${minutesLeft()} min left`;
+    const m = mark && mark.game === location.href.split('#')[0] ? ` · flagged at ${markText(mark)}` : '';
+    b.textContent = `Postmortem · new games blocked · ${minutesLeft()} min left${m}`;
   }
 
   function shakeBanner() {
@@ -160,12 +175,16 @@
     h.textContent = 'Game over. Postmortem time.';
     const sub = document.createElement('p');
     sub.className = 'cf-sub';
-    sub.textContent = `That opening is still fresh. New games stay blocked for ${minutesLeft()} min.`;
+    const mine = mark && mark.game === location.href.split('#')[0] ? mark : null;
+    sub.textContent = mine
+      ? `You flagged ${markText(mine)}. New games stay blocked for ${minutesLeft()} min.`
+      : `That opening is still fresh. New games stay blocked for ${minutesLeft()} min.`;
     card.append(h, sub);
     o.append(card);
     (document.body || document.documentElement).appendChild(o);
 
-    const href = await waitAnalysisHref(ANALYSIS_LINK_WAIT_MS);
+    let href = await waitAnalysisHref(ANALYSIS_LINK_WAIT_MS);
+    if (href && mine && CF_SITE.analysisAtPly) href = CF_SITE.analysisAtPly(href, mine.ply);
     if (href && settings.autoOpenAnalysis) {
       sub.textContent = 'Opening the analysis board…';
       setTimeout(async () => {
@@ -179,7 +198,7 @@
       const a = document.createElement('a');
       a.className = 'cf-go';
       a.href = href;
-      a.textContent = 'Open the analysis board';
+      a.textContent = mine ? `Open the analysis board at ${markText(mine)}` : 'Open the analysis board';
       a.addEventListener('click', async (e) => {
         e.preventDefault();
         await disarm();
@@ -221,7 +240,9 @@
 
   // MARK: arm / disarm
   function setArmed(until) {
+    const wasArmed = isArmed();
     armedUntil = until > Date.now() ? until : 0;
+    if (!wasArmed && isArmed()) recordMark();
     clearTimeout(expiryTimer);
     clearInterval(bannerTimer);
     if (isArmed()) {
@@ -245,8 +266,12 @@
 
   // MARK: storage sync
   cfGetSettings().then((s) => (settings = s));
-  chrome.storage.local.get('armedUntil').then(({ armedUntil = 0 }) => setArmed(armedUntil));
+  chrome.storage.local.get(['armedUntil', 'mark']).then(({ armedUntil = 0, mark: m = null }) => {
+    mark = m;
+    setArmed(armedUntil);
+  });
   chrome.storage.onChanged.addListener((ch, area) => {
+    if (area === 'local' && ch.mark) mark = ch.mark.newValue || null;
     if (area === 'local' && ch.armedUntil) setArmed(ch.armedUntil.newValue || 0);
     if (area === 'sync') cfGetSettings().then((s) => (settings = s));
   });
